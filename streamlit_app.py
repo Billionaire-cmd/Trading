@@ -120,7 +120,7 @@ def create_lstm_model(data):
     return model
 
 # Streamlit UI
-st.title('Advanced Technical Analysis & Price Prediction')
+st.title('📈📉🤖🤖🤖 Rabiotic Advanced Technical Analysis & Price Prediction')
 
 # Fetch data and machine learning model predictions
 data, predictions = get_data(selected_symbol, "2020-01-01")
