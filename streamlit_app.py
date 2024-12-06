@@ -73,7 +73,7 @@ def calculate_rsi(data, period=14):
     return rsi
 
 # Function to fetch data and perform machine learning-based analysis
-def get_data(symbol='AAPL', start_date='2020-01-01'):
+def get_data(symbol, start_date='2020-01-01'):
     # Fetch historical data using yfinance
     data = yf.download(symbol, start=start_date)
     
@@ -120,7 +120,7 @@ def prophet_forecasting(data, periods=30):
     return forecast
 
 # Streamlit UI
-st.title('📉📈🤖🤖🤖💯💯💯Rabiotic Advanced Technical Analysis & Price Prediction')
+st.title('Advanced Technical Analysis & Price Prediction')
 
 # Fetch data and machine learning model predictions
 data, predictions = get_data(selected_symbol, "2020-01-01")
