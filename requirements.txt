@@ -6,4 +6,4 @@ scipy
 altair
 scikit-learn
 yfinance
-prophet
+tensorflow
