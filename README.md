@@ -1,4 +1,4 @@
-# Trading Analysis
+#🤖🤖🤖 Rabiotic Trading Analysis
 ```
 ⬆️ (Replace above with your app's name)
 ```
