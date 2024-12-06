@@ -1,4 +1,4 @@
-# 📦 Streamlit App Starter Kit 
+# Trading Analysis
 ```
 ⬆️ (Replace above with your app's name)
 ```
