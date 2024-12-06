@@ -55,7 +55,7 @@ def plot_closing_prices(data, symbol, timeframe):
     plt.ylabel('Price (USD)')
     plt.legend()
     plt.grid(True)
-    st.pyplot(plt)
+    st.pyplot(plt)  # Display the plot in Streamlit
 
 # Plot the closing prices for the selected trading pair and timeframe
 plot_closing_prices(market_data, selected_symbol, selected_timeframe)
@@ -123,29 +123,20 @@ ax.set_ylabel("Price")
 ax.legend()
 st.pyplot(fig)
 
-# Plot predictions
-fig2, ax2 = plt.subplots(figsize=(14, 7))
-ax2.plot(data.index[-len(predictions):], predictions, label='Predicted Price', color='orange')
-ax2.plot(data['Close'].tail(len(predictions)), label='Actual Price', color='blue')
-ax2.set_title(f"{selected_symbol} - Price Prediction vs Actual")
-ax2.set_xlabel("Date")
-ax2.set_ylabel("Price")
-ax2.legend()
-st.pyplot(fig2)
-
-# Displaying technical analysis insights based on RSI
-if data['RSI'].iloc[-1] <= 9:
-    st.write("**RSI indicates Strong Buy (LL Entry)**")
-    st.write("**Action: Execute Long Position**")
-elif data['RSI'].iloc[-1] >= 90:
-    st.write("**RSI indicates Strong Sell (HH Entry)**")
-    st.write("**Action: Execute Short Position**")
-elif data['RSI'].iloc[-1] == 50:
-    st.write("**RSI indicates Take Profit (Resistance)**")
-    st.write("**Action: Consider Taking Profit**")
-elif data['RSI'].iloc[-1] == 80:
-    st.write("**RSI indicates Strong Sell (LH Entry)**")
-    st.write("**Action: Prepare to Exit Position**")
-else:
-    st.write("**RSI indicates neutral position or hold**")
-    st.write("**Action: Hold Position for Now**")
+# Submit Prediction button
+if st.button('Submit Prediction'):
+    # Plot predictions
+    fig2, ax2 = plt.subplots(figsize=(14, 7))
+    ax2.plot(data.index[-len(predictions):], predictions, label='Predicted Price', color='orange')
+    ax2.plot(data['Close'].tail(len(predictions)), label='Actual Price', color='blue')
+    ax2.set_title(f"{selected_symbol} - Price Prediction vs Actual")
+    ax2.set_xlabel("Date")
+    ax2.set_ylabel("Price")
+    ax2.legend()
+    st.pyplot(fig2)
+    
+    st.write("### Prediction Summary")
+    if predictions[-1] > data['Close'].iloc[-1]:
+        st.write("**Recommendation:** Enter a Long Position. Price is expected to rise.")
+    else:
+        st.write("**Recommendation:** Enter a Short Position. Price is expected to fall.")
