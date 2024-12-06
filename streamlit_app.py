@@ -6,8 +6,6 @@ import yfinance as yf
 from sklearn.preprocessing import StandardScaler
 from sklearn.model_selection import train_test_split
 from sklearn.ensemble import RandomForestRegressor
-from tensorflow.keras.models import Sequential
-from tensorflow.keras.layers import Dense, LSTM
 
 # Sidebar for selecting trading pair and timeframe
 st.sidebar.header("Select Trading Pair and Timeframe")
@@ -57,7 +55,7 @@ def plot_closing_prices(data, symbol, timeframe):
     plt.ylabel('Price (USD)')
     plt.legend()
     plt.grid(True)
-    st.pyplot(plt)  # Display the plot in Streamlit
+    st.pyplot(plt)
 
 # Plot the closing prices for the selected trading pair and timeframe
 plot_closing_prices(market_data, selected_symbol, selected_timeframe)
@@ -104,21 +102,6 @@ def get_data(symbol='AAPL', start_date='2020-01-01'):
     
     return data, predictions
 
-# Function to create a deep learning LSTM model for prediction
-def create_lstm_model(data):
-    # Reshape data for LSTM (time series prediction)
-    data = data[['Close']].values
-    data = data.reshape((data.shape[0], 1, data.shape[1]))
-    
-    model = Sequential()
-    model.add(LSTM(50, return_sequences=True, input_shape=(data.shape[1], data.shape[2])))
-    model.add(LSTM(50, return_sequences=False))
-    model.add(Dense(25))
-    model.add(Dense(1))
-    model.compile(optimizer='adam', loss='mean_squared_error')
-    
-    return model
-
 # Streamlit UI
 st.title('Advanced Technical Analysis & Price Prediction')
 
@@ -150,18 +133,6 @@ ax2.set_ylabel("Price")
 ax2.legend()
 st.pyplot(fig2)
 
-# LSTM Model Prediction
-if st.button('Train LSTM Model'):
-    model = create_lstm_model(data)
-    data_for_lstm = data[['Close']].values
-    data_for_lstm = data_for_lstm.reshape((data_for_lstm.shape[0], 1, data_for_lstm.shape[1]))
-    
-    model.fit(data_for_lstm, data['Close'], epochs=5, batch_size=32)
-    lstm_predictions = model.predict(data_for_lstm)
-    
-    st.write(f"LSTM Model Prediction for {selected_symbol}:")
-    st.write(lstm_predictions[-1])
-
 # Displaying technical analysis insights based on RSI
 if data['RSI'].iloc[-1] <= 9:
     st.write("**RSI indicates Strong Buy (LL Entry)**")
@@ -178,17 +149,3 @@ elif data['RSI'].iloc[-1] == 80:
 else:
     st.write("**RSI indicates neutral position or hold**")
     st.write("**Action: Hold Position for Now**")
-
-# Trade Scaling Recommendations based on predictions
-if predictions[-1] > data['Close'].iloc[-1]:
-    st.write("**Trade Execution Recommendation:** Enter Long Position. Price is expected to rise.")
-    st.write("**Scaling Strategy:** Consider increasing position size as price moves upward towards predicted target.")
-else:
-    st.write("**Trade Execution Recommendation:** Enter Short Position. Price is expected to fall.")
-    st.write("**Scaling Strategy:** If price drops as predicted, consider adding more to the short position for higher gains.")
-
-# Exit Strategy based on LSTM and Technical Indicators
-if lstm_predictions[-1] > data['Close'].iloc[-1]:
-    st.write("**Exit Strategy:** If price continues upward, scale out of position near resistance levels.")
-else:
-    st.write("**Exit Strategy:** If price continues downward, consider closing short positions near support levels.")
