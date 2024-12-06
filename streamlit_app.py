@@ -120,7 +120,7 @@ def prophet_forecasting(data, periods=30):
     return forecast
 
 # Streamlit UI
-st.title('Advanced Technical Analysis & Price Prediction')
+st.title('🤖🤖🤖💯💯💯 Rabiotic Advanced Technical Analysis & Price Prediction App')
 
 # Fetch data and machine learning model predictions
 data, predictions = get_data(selected_symbol, "2020-01-01")
