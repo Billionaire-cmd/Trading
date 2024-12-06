@@ -6,6 +6,7 @@ import yfinance as yf
 from sklearn.preprocessing import StandardScaler
 from sklearn.model_selection import train_test_split
 from sklearn.ensemble import RandomForestRegressor
+from prophet import Prophet  # Advanced time series forecasting tool
 
 # Sidebar for selecting trading pair and timeframe
 st.sidebar.header("Select Trading Pair and Timeframe")
@@ -102,6 +103,22 @@ def get_data(symbol='AAPL', start_date='2020-01-01'):
     
     return data, predictions
 
+# Function to create and forecast with Prophet
+def prophet_forecasting(data, periods=30):
+    # Prepare data for Prophet
+    df = data[['Close']].reset_index()
+    df.rename(columns={'Date': 'ds', 'Close': 'y'}, inplace=True)
+    
+    # Initialize Prophet model
+    model = Prophet()
+    model.fit(df)
+    
+    # Create future dataframe and forecast
+    future = model.make_future_dataframe(periods=periods)
+    forecast = model.predict(future)
+    
+    return forecast
+
 # Streamlit UI
 st.title('Advanced Technical Analysis & Price Prediction')
 
@@ -123,19 +140,23 @@ ax.set_ylabel("Price")
 ax.legend()
 st.pyplot(fig)
 
+# Prophet Forecasting
+forecast = prophet_forecasting(market_data, periods=30)
+
+# Prophet Plot
+st.write("### Prophet Forecast")
+fig_forecast = plt.figure(figsize=(14, 7))
+plt.plot(forecast['ds'], forecast['yhat'], label="Forecasted Price", color="orange")
+plt.plot(market_data['Close'], label="Historical Close", color="blue")
+plt.legend()
+plt.title("Forecasted vs Historical Prices")
+plt.xlabel("Date")
+plt.ylabel("Price")
+st.pyplot(fig_forecast)
+
 # Submit Prediction button
 if st.button('Submit Prediction'):
-    # Plot predictions
-    fig2, ax2 = plt.subplots(figsize=(14, 7))
-    ax2.plot(data.index[-len(predictions):], predictions, label='Predicted Price', color='orange')
-    ax2.plot(data['Close'].tail(len(predictions)), label='Actual Price', color='blue')
-    ax2.set_title(f"{selected_symbol} - Price Prediction vs Actual")
-    ax2.set_xlabel("Date")
-    ax2.set_ylabel("Price")
-    ax2.legend()
-    st.pyplot(fig2)
-    
-    st.write("### Prediction Summary")
+    # Display prediction recommendation
     if predictions[-1] > data['Close'].iloc[-1]:
         st.write("**Recommendation:** Enter a Long Position. Price is expected to rise.")
     else:
