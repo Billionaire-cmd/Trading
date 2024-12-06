@@ -6,4 +6,3 @@ scipy
 altair
 scikit-learn
 yfinance
-tensorflow
